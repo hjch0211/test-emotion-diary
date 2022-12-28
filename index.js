@@ -13,6 +13,13 @@ const main = async () => {
   //     },
   //   });
 
+  await prisma.score.create({
+    data: {
+      emotion: "hi",
+      point: 30,
+    },
+  });
+
   const allUsers = await prisma.user.findMany({
     // 옵션 설정. 다른 테이블 정보는 옵션 설정 안해주면 안불러오네?
     include: {
@@ -23,6 +30,7 @@ const main = async () => {
   console.log(allUsers);
 };
 
+// 에러 처리 라우터와 어떻게 결합하면 좋을까?
 main()
   .then(async () => {
     // 스크립트가 끝난 후에는 연결을 끊어주어야 함

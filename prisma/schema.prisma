@@ -13,17 +13,18 @@ datasource db {
 model Score {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  content     String   @db.VarChar(30)
+  emotion   String   @db.VarChar(30)
   point     Int 
-  author    User     @relation(fields: [authorId], references: [id]) // 테이블 특성 칼럼을 저장하는 건가?
-  authorId  Int 
-  // 외래키. 위에서 author에서 @relation을 통해서 테이블을 받아
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int 
+  // 외래키. 위에서 user에서 @relation을 통해서 테이블을 받아
   // 관계형 구조를 객체처럼 사용할 수 있게 된 것 같음
 }
 
 model User {
   id      Int      @id @default(autoincrement()) // 얘를 uuid를 통해서 생성해야 하나?
-  email   String   @unique // 만약 유니크하지 않게 되면 어떻게 해줄까?
+  email   String   @unique
   name    String?
-  scores   Score[] // 다른 테이블을 칼럼으로 받는 건가?
+
+  scores  Score[] // [] 이 처리로  1 : n 관계 처리가 가능
 }
