@@ -7,7 +7,7 @@ module.exports = userORM = {
    * @param {{
    *    email : string;
    *    name : string;
-   *    scores ?: { emotion : string; point : number }
+   *    scores ?: { comment : string; point : number }
    * }} payload
    */
   createUser: async (payload) => {
@@ -59,7 +59,7 @@ module.exports = userORM = {
   /**
    * @param {{
    *    email : string;
-   *    scores : { emotion : string; point : number }
+   *    scores : { comment : string; point : number }
    * }} payload
    */
   createUserScore: async (payload) => {

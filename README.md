@@ -1,2 +1,3 @@
-# test-emotion-diary
-감정 일기 테스트용 BE
+# test-mood-diary
+
+기분 일기 테스트용 BE

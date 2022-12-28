@@ -13,7 +13,7 @@ datasource db {
 model Score {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  emotion   String   @db.VarChar(30)
+  comment   String   @db.VarChar(30)
   point     Int 
   user      User     @relation(fields: [userId], references: [id])
   userId    Int 

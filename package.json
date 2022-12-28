@@ -1,7 +1,7 @@
 {
-  "name": "test-emotion-diary",
+  "name": "mood-diary-fe",
   "version": "1.0.0",
-  "description": "감정 일기 테스트용 BE",
+  "description": "기분 일기 테스트용 BE",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
