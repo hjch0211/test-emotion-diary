@@ -1,41 +1,82 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-// [Temp] 구조도 임시 -> ormUser과 ormScore 이런 식으로 나눌까
-module.exports = userOrm = {
+// [Temp] 구조도 임시
+// [Todo] 예외 처리 안해주었음
+module.exports = userORM = {
   /**
    * @param {{
    *    email : string;
    *    name : string;
-   *    scores : { emotion : string; point : number }
+   *    scores ?: { emotion : string; point : number }
    * }} payload
    */
   createUser: async (payload) => {
     const { email, name = "", scores } = payload;
     await prisma.user.create({
-      data: { email, name, scores: { create: scores } },
+      data: { email, name, scores: { create: scores && { ...scores } } },
     });
   },
 
   /**
    * @param {string} email
+   * [!] 더 깔끔하게 쓸 수 있는 방법은 없을까
    */
   deleteUser: async (email) => {
+    // score 먼저 삭제 해주어야 삭제가 정상적으로 됨
+    const [res] = await prisma.user.findMany({
+      where: { email },
+      select: { scores: true },
+    });
+
+    res &&
+      res.scores.forEach(async (score) => {
+        await prisma.score.delete({
+          where: { id: score.id },
+        });
+      });
+
     await prisma.user.delete({
       where: { email },
     });
   },
 
-  // [Todo] 나중에 id는 제외하고 리턴하게 만들어 보기
-  findAllUser: async () => await prisma.user.findMany(),
+  readAllUser: async () => await prisma.user.findMany({ select: { email: true, name: true } }),
 
   /**
    * @param {string} email
-   * @returns user record
+   * @returns user's score tables
    */
-  findUser: async (email) => await prisma.user.findUnique({ where: { email } }),
+  readUserScores: async (email) =>
+    await prisma.user.findMany({ where: { email }, select: { scores: true } }),
 
-  // 유저의 스코어 조회 추가
-  //   findUserScores: async (email) => await findUser,
+  /**
+   * @param {string} email
+   * @returns user's record
+   */
+  readUserData: async (email) =>
+    await prisma.user.findUnique({ where: { email }, include: { scores: true } }),
+
+  /**
+   * @param {{
+   *    email : string;
+   *    scores : { emotion : string; point : number }
+   * }} payload
+   */
+  createUserScore: async (payload) => {
+    const { email, scores } = payload;
+    await prisma.user.update({
+      where: { email },
+      data: {
+        scores: { create: { ...scores } },
+      },
+    });
+  },
+
+  /**
+   * @param {*} payload
+   * @deprecated [!] score 테이블의 어떤 키를 참고하면 좋을까
+   */
+  deleteUserScore: async (payload) => {},
+
   // 스코어 삭제 추가
-  // 스코어 추가 추가
 };
