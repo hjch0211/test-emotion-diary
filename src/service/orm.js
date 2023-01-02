@@ -7,13 +7,12 @@ module.exports = userORM = {
    * @param {{
    *    email : string;
    *    name : string;
-   *    scores ?: { comment : string; point : number }
    * }} payload
    */
   createUser: async (payload) => {
-    const { email, name = "", scores } = payload;
+    const { email, name = "" } = payload;
     await prisma.user.create({
-      data: { email, name, scores: { create: scores && { ...scores } } },
+      data: { email, name, role: false },
     });
   },
 
@@ -73,10 +72,25 @@ module.exports = userORM = {
   },
 
   /**
-   * @param {*} payload
-   * @deprecated [!] score 테이블의 어떤 키를 참고하면 좋을까
+   * @param {{
+   *    email : string;
+   *    scoreId : number;
+   * }} payload
    */
-  deleteUserScore: async (payload) => {},
+  deleteUserScore: async (payload) => {
+    const { email, scoreId } = payload;
 
-  // 스코어 삭제 추가
+    const [{ scores }] = await prisma.user.findMany({
+      where: { email },
+      select: {
+        scores: {
+          where: { id: scoreId },
+        },
+      },
+    });
+    scores.length !== 0 &&
+      (await prisma.score.delete({
+        where: { id: scores[0].id },
+      }));
+  },
 };

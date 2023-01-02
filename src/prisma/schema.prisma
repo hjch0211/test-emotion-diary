@@ -26,7 +26,7 @@ model User {
   email         String   @unique
   name          String?
   refreshToken  String?  @unique
-  role          Boolean  
+  role          Boolean  // 1이 로그인
 
   scores  Score[] // [] 이 처리로  1 : n 관계 처리가 가능
 }
