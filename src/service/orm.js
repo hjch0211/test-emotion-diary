@@ -17,6 +17,22 @@ module.exports = userORM = {
   },
 
   /**
+   * @param {{
+   *    email : string;
+   *    scores : { comment : string; point : number }
+   * }} payload
+   */
+  createUserScore: async (payload) => {
+    const { email, scores } = payload;
+    await prisma.user.update({
+      where: { email },
+      data: {
+        scores: { create: { ...scores } },
+      },
+    });
+  },
+
+  /**
    * @param {string} email
    * @returns user's score tables
    */
@@ -40,16 +56,14 @@ module.exports = userORM = {
   /**
    * @param {{
    *    email : string;
-   *    scores : { comment : string; point : number }
+   *    refreshToken : string;
    * }} payload
    */
-  createUserScore: async (payload) => {
-    const { email, scores } = payload;
+  updateUserRefreshToken: async (payload) => {
+    const { email, refreshToken } = payload;
     await prisma.user.update({
       where: { email },
-      data: {
-        scores: { create: { ...scores } },
-      },
+      data: { refreshToken },
     });
   },
 

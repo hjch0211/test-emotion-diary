@@ -1,4 +1,5 @@
 const userORM = require("./service/orm");
+const { refresh } = require("./service/jwt");
 // [Todo] TS로 옮기다가 실패하고 다시 JS로 작업중. 일단 JS로 배워놓자
 // [Todo] module 방식으로 바꾸기
 
@@ -9,8 +10,11 @@ const main = async () => {
   // await userORM.createUser(testUser);
   // await userORM.createUserScore({ email: testUser.email, scores: testScore });
   const test = await userORM.readUserScores(testUser.email);
+  const token = await userORM.readUserRefreshToken(testUser.email);
+  const refreshToken = await refresh();
+  await userORM.updateUserRefreshToken({ email: testUser.email, refreshToken });
   // const scoreId = test[0].scores[0].id;
-  console.log(test);
+  console.log(token);
   // console.log(await userORM.deleteUserScore({ email: testUser.email, scoreId }));
 };
 

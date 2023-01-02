@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const userOrm = require("./orm");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 AT_EXPIRES_IN = "1h";
@@ -6,13 +7,9 @@ RT_EXPIRES_IN = "14d";
 ALGORITHM = "HS256";
 
 module.exports = {
-  sign: (user) => {
+  sign: ({ userEmail, userRole }) => {
     // access token 발급
-    const payload = {
-      id: user.id,
-      role: user.role,
-    };
-
+    const payload = { email: userEmail, role: userRole };
     // secret으로 sign하여 발급하고 return
     return jwt.sign(payload, JWT_SECRET, {
       algorithm: ALGORITHM, // 암호화 알고리즘
@@ -25,7 +22,7 @@ module.exports = {
       const decoded = jwt.verify(token, JWT_SECRET);
       return {
         ok: true,
-        id: decoded.id,
+        email: decoded.email,
         role: decoded.role,
       };
     } catch (err) {
@@ -43,11 +40,11 @@ module.exports = {
       expiresIn: RT_EXPIRES_IN,
     });
   },
-  refreshVerify: async (token, userId) => {
+  refreshVerify: async (token, userEmail) => {
     // refresh token 검증
     try {
-      const data = await ss; // refresh token 가져오기
-      if (token === data) {
+      const { refreshToken } = await userOrm.readUserRefreshToken(userEmail); // refresh token 가져오기
+      if (token === refreshToken) {
         try {
           jwt.verify(token, JWT_SECRET);
           return true;
