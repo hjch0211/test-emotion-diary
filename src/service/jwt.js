@@ -1,6 +1,10 @@
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 
+AT_EXPIRES_IN = "1h";
+RT_EXPIRES_IN = "14d";
+ALGORITHM = "HS256";
+
 module.exports = {
   sign: (user) => {
     // access token 발급
@@ -11,8 +15,8 @@ module.exports = {
 
     // secret으로 sign하여 발급하고 return
     return jwt.sign(payload, secret, {
-      algorithm: "HS256", // 암호화 알고리즘
-      expiresIn: "1h", // 유효기간
+      algorithm: ALGORITHM, // 암호화 알고리즘
+      expiresIn: AT_EXPIRES_IN, // 유효기간
     });
   },
   verify: (token) => {
@@ -36,8 +40,8 @@ module.exports = {
     // refresh token 발급
     return jwt.sign({}, secret, {
       // refresh token은 payload 없이 발급 -> 왜일까
-      algorithm: "HS256",
-      expiresIn: "14d",
+      algorithm: ALGORITHM,
+      expiresIn: RT_EXPIRES_IN,
     });
   },
   refreshVerify: async (token, userId) => {

@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 // [Temp] 구조도 임시
-// [Todo] 예외 처리 안해주었음
+// [Todo] 예외 처리 해주기
 module.exports = userORM = {
   /**
    * @param {{

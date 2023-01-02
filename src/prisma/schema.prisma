@@ -25,7 +25,8 @@ model User {
   id            Int      @id @default(autoincrement()) // 얘를 uuid를 통해서 생성해야 하나?
   email         String   @unique
   name          String?
-  refreshToken  String   @unique 
+  refreshToken  String?  @unique
+  role          Boolean  
 
   scores  Score[] // [] 이 처리로  1 : n 관계 처리가 가능
 }
