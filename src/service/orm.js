@@ -18,6 +18,43 @@ module.exports = userORM = {
 
   /**
    * @param {string} email
+   * @returns user's score tables
+   */
+  readUserScores: async (email) =>
+    await prisma.user.findMany({ where: { email }, select: { scores: true } }),
+
+  /**
+   * @param {string} email
+   * @returns user's record
+   */
+  readUserData: async (email) =>
+    await prisma.user.findUnique({ where: { email }, include: { scores: true } }),
+
+  /**
+   * @param {string} email
+   * @returns user's refresh token
+   */
+  readUserRefreshToken: async (email) =>
+    await prisma.user.findUnique({ where: { email }, select: { refreshToken: true } }),
+
+  /**
+   * @param {{
+   *    email : string;
+   *    scores : { comment : string; point : number }
+   * }} payload
+   */
+  createUserScore: async (payload) => {
+    const { email, scores } = payload;
+    await prisma.user.update({
+      where: { email },
+      data: {
+        scores: { create: { ...scores } },
+      },
+    });
+  },
+
+  /**
+   * @param {string} email
    * [!] 더 깔끔하게 쓸 수 있는 방법은 없을까
    */
   deleteUser: async (email) => {
@@ -36,38 +73,6 @@ module.exports = userORM = {
 
     await prisma.user.delete({
       where: { email },
-    });
-  },
-
-  readAllUser: async () => await prisma.user.findMany({ select: { email: true, name: true } }),
-
-  /**
-   * @param {string} email
-   * @returns user's score tables
-   */
-  readUserScores: async (email) =>
-    await prisma.user.findMany({ where: { email }, select: { scores: true } }),
-
-  /**
-   * @param {string} email
-   * @returns user's record
-   */
-  readUserData: async (email) =>
-    await prisma.user.findUnique({ where: { email }, include: { scores: true } }),
-
-  /**
-   * @param {{
-   *    email : string;
-   *    scores : { comment : string; point : number }
-   * }} payload
-   */
-  createUserScore: async (payload) => {
-    const { email, scores } = payload;
-    await prisma.user.update({
-      where: { email },
-      data: {
-        scores: { create: { ...scores } },
-      },
     });
   },
 

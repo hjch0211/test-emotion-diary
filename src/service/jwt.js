@@ -14,16 +14,15 @@ module.exports = {
     };
 
     // secret으로 sign하여 발급하고 return
-    return jwt.sign(payload, secret, {
+    return jwt.sign(payload, JWT_SECRET, {
       algorithm: ALGORITHM, // 암호화 알고리즘
       expiresIn: AT_EXPIRES_IN, // 유효기간
     });
   },
   verify: (token) => {
     // access token 검증
-    let decoded = null;
     try {
-      decoded = jwt.verify(token, secret);
+      const decoded = jwt.verify(token, JWT_SECRET);
       return {
         ok: true,
         id: decoded.id,
@@ -38,7 +37,7 @@ module.exports = {
   },
   refresh: () => {
     // refresh token 발급
-    return jwt.sign({}, secret, {
+    return jwt.sign({}, JWT_SECRET, {
       // refresh token은 payload 없이 발급 -> 왜일까
       algorithm: ALGORITHM,
       expiresIn: RT_EXPIRES_IN,
@@ -50,7 +49,7 @@ module.exports = {
       const data = await ss; // refresh token 가져오기
       if (token === data) {
         try {
-          jwt.verify(token, secret);
+          jwt.verify(token, JWT_SECRET);
           return true;
         } catch (err) {
           return false;
