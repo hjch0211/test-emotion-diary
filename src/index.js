@@ -1,25 +1,53 @@
-const userORM = require("./service/orm");
-const { refresh } = require("./service/jwt");
-// [Todo] TS로 옮기다가 실패하고 다시 JS로 작업중. 일단 JS로 배워놓자
-// [Todo] module 방식으로 바꾸기
+// [Todo] 애네 합쳐주고 싶네
+const express = require("express");
+const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const dotenv = require("dotenv");
 
-const testUser = { email: "eeeee@tset.com", name: "niknknknkn" };
-const testScore = { comment: "hihihi", point: 10000 };
+dotenv.config();
+const indexRouter = require("./routes");
 
-const main = async () => {
-  // await userORM.createUser(testUser);
-  // await userORM.createUserScore({ email: testUser.email, scores: testScore });
-  const test = await userORM.readUserScores(testUser.email);
-  const token = await userORM.readUserRefreshToken(testUser.email);
-  const refreshToken = await refresh();
-  await userORM.updateUserRefreshToken({ email: testUser.email, refreshToken });
-  // const scoreId = test[0].scores[0].id;
-  console.log(token);
-  // console.log(await userORM.deleteUserScore({ email: testUser.email, scoreId }));
-};
+const app = express();
+app.set("port", process.env.PORT || 4000);
+
+app.use(morgan("dev"));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.COOKIE_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+    },
+  })
+);
+
+app.use("/", indexRouter);
+
+// 없는 라우터로 접근 시
+app.use((req, res, next) => {
+  const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
+  error.status = 404;
+  next(error);
+});
+
+app.use((err, req, res, next) => {
+  // 왜 locals?
+  res.locals.message = err.message;
+  res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
+  res.status(err.status || 500);
+  res.render("error");
+});
+
+app.listen(app.get("port"), () => {
+  console.log(`http://localhost:${app.get("port")} 에서 대기중`);
+});
 
 // 에러 처리 라우터와 어떻게 결합하면 좋을까?
-main();
+// main();
 // .then(async () => {
 //   // 스크립트가 끝난 후에는 연결을 끊어주어야 함
 //   await prisma.$disconnect();
