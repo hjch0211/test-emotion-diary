@@ -1,5 +1,6 @@
 const userORM = require("./service/orm");
 // [Todo] TS로 옮기다가 실패하고 다시 JS로 작업중. 일단 JS로 배워놓자
+// [Todo] module 방식으로 바꾸기
 const main = async () => {};
 
 // 에러 처리 라우터와 어떻게 결합하면 좋을까?
