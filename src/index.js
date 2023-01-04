@@ -40,6 +40,8 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
   // res.locals는 request의 라이프 타임에만 유지됨
+  console.log(err);
+  res.status(err.status).json({});
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
   res.status(err.status || 500);
