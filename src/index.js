@@ -4,6 +4,8 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const dotenv = require("dotenv");
+// 얘가 있어야 req.body 사용 가능
+const bodyParser = require("body-parser");
 
 dotenv.config();
 const indexRouter = require("./routes");
@@ -11,6 +13,8 @@ const indexRouter = require("./routes");
 const app = express();
 app.set("port", process.env.PORT || 4000);
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
