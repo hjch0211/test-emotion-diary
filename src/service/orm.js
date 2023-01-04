@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 // [Temp] 구조도 임시
 // [Todo] 예외 처리 해주기
+// [Todo] return 값이 지멋대로 이긴 함
 module.exports = userORM = {
   /**
    * @param {{

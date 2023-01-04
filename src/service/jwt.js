@@ -7,9 +7,9 @@ RT_EXPIRES_IN = "14d";
 ALGORITHM = "HS256";
 
 module.exports = {
-  sign: ({ userEmail, userRole }) => {
+  sign: (userEmail) => {
     // access token 발급
-    const payload = { email: userEmail, role: userRole };
+    const payload = { email: userEmail };
     // secret으로 sign하여 발급하고 return
     return jwt.sign(payload, JWT_SECRET, {
       algorithm: ALGORITHM, // 암호화 알고리즘
