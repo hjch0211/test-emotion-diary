@@ -1,19 +1,20 @@
 const express = require("express");
 const userOrm = require("../service/orm");
 const router = express.Router();
-const httpError = require("../util/httpError");
+const HttpError = require("../util/httpError");
+
+const ERROR_BAD_REQUEST = new HttpError(400, "요청 형식이 올바르지 않습니다.");
+const ERROR_DUPLICATE_EMAIL = new HttpError(400, "이메일이 중복되었습니다.");
 
 router
   // 로그인일 경우
   .post("/signin", (req, res) => {})
   // 회원가입의 경우
-  .post("/signup", async (req, res) => {
+  .post("/signup", async (req, res, next) => {
     const { email = null, name = null } = req.body;
-    // email이나 name이 null인 경우
-    if (!email || !name) throw new httpError(400, "요청 형식이 올바르지 않습니다.");
-    // email이 겹치는 경우
+    if (!email || !name) next(ERROR_BAD_REQUEST);
     const isUnique = !(await userOrm.readUserData(email));
-    if (!isUnique) throw new httpError(400, "이메일이 중복되었습니다.");
+    if (!isUnique) next(ERROR_DUPLICATE_EMAIL);
 
     // db에 사용자 정보 추가하고
     // response하는 작업하기

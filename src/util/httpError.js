@@ -1,10 +1,7 @@
 module.exports = class CoreError extends Error {
-  /**
-   * @param {{status : number; message : string}} metaData
-   */
-  constructor(metaData) {
+  constructor(status = 500, message = "internal error") {
     super(message);
-    this.status = metaData.status;
+    this.status = status;
     this.message = message;
   }
 };

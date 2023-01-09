@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 // 얘가 있어야 req.body 사용 가능
 const bodyParser = require("body-parser");
 const httpError = require("./util/httpError");
+const exceptError = require("./routes/middlewares/exceptError");
 
 dotenv.config();
 const indexRouter = require("./routes");
@@ -42,11 +43,7 @@ app.use((req, res) => {
 /**
  * 에러 처리 라우터
  */
-app.use((err, req, res, next) => {
-  // res.status(err.status).json(err);
-  // 왜 안받아지지?
-  res.json(err);
-});
+app.use(exceptError);
 
 app.listen(app.get("port"), () => {
   console.log(`http://localhost:${app.get("port")} 에서 대기중`);
