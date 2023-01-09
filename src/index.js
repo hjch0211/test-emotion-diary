@@ -17,7 +17,10 @@ app.set("port", process.env.PORT || 4000);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(morgan("dev"));
+
+if (process.env.NODE_ENV === "production") app.use(morgan("combined"));
+else app.use(morgan("dev"));
+
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   session({
