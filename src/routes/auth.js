@@ -8,10 +8,25 @@ const jwt = require("../service/jwt");
 
 const ERROR_BAD_REQUEST = new HttpError(400, "요청 형식이 올바르지 않습니다.");
 const ERROR_DUPLICATE_EMAIL = new HttpError(400, "이메일이 중복되었습니다.");
+const ERROR_INVALID_USERDATA = new HttpError(400, "유저 정보가 없습니다.");
 
 router
-  // 로그인일 경우
-  .post("/signin", (req, res) => {})
+  /**
+   * POST signin
+   * @reqBody email, name
+   * @return email, name, accessToken, refreshToken
+   */
+  .post("/signin", async (req, res, next) => {
+    const { email = null, name = null } = req.body;
+    if (!email || !name) return next(ERROR_BAD_REQUEST);
+
+    const isInvalid = !(await userOrm.readUserData(email));
+    if (isInvalid) return next(ERROR_INVALID_USERDATA);
+
+    const accessToken = jwt.issueAcsTkn(email);
+    const refreshToken = jwt.issueRfrTkn();
+    return res.status(200).json(new ResponseData({ email, name, accessToken, refreshToken }));
+  })
   /**
    * POST signup
    * @reqBody email, name
