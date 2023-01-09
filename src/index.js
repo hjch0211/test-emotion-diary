@@ -6,7 +6,7 @@ const session = require("express-session");
 const dotenv = require("dotenv");
 // 얘가 있어야 req.body 사용 가능
 const bodyParser = require("body-parser");
-const httpError = require("./util/httpError");
+const HttpError = require("./util/httpError");
 const exceptError = require("./routes/middlewares/exceptError");
 
 dotenv.config();
@@ -37,7 +37,7 @@ app.use("/", indexRouter);
  * 경로가 없는 라우터 접근 시
  */
 app.use((req, res) => {
-  throw new httpError(404, "경로를 찾을 수 없습니다.");
+  throw new HttpError(404, "경로를 찾을 수 없습니다.");
 });
 
 /**
