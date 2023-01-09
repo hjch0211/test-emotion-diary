@@ -1,8 +1,8 @@
-const RateLimit = require("express-rate-limit");
+const ratelimit = require("express-rate-limit");
 const ERROR = require("../../util/errorCode");
 
-const apiLimiter = new RateLimit({
-  windowMs: 60 * 1000, // 1분
+const apiLimiter = ratelimit({
+  windowMs: 5 * 1000, // 1분
   max: 1,
   delayMs: 0,
   handler(req, res, next) {

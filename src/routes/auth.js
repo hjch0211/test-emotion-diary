@@ -5,14 +5,16 @@ const ResponseData = require("../util/ResponseData");
 const jwt = require("../service/jwt");
 const parseToken = require("../util/parseToken");
 const ERROR = require("../util/errorCode");
+const { apiLimiter } = require("./middlewares/limiter");
 
 router
   /**
    * POST signin
    * @reqBody email, name
    * @return email, name, accessToken, refreshToken
+   * [!] 5초에 한 번만 로그인하게끔 했음
    */
-  .post("/signin", async (req, res, next) => {
+  .post("/signin", apiLimiter, async (req, res, next) => {
     const { email = null, name = null } = req.body;
     if (!email || !name) return next(ERROR.BAD_REQUEST);
 
