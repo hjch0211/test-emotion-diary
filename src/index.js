@@ -6,6 +6,7 @@ const session = require("express-session");
 const dotenv = require("dotenv");
 // 얘가 있어야 req.body 사용 가능
 const bodyParser = require("body-parser");
+const httpError = require("./util/httpError");
 
 dotenv.config();
 const indexRouter = require("./routes");
@@ -31,21 +32,20 @@ app.use(
 
 app.use("/", indexRouter);
 
-// 없는 라우터로 접근 시
-app.use((req, res, next) => {
-  const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
-  error.status = 404;
-  next(error);
+/**
+ * 경로가 없는 라우터 접근 시
+ */
+app.use((req, res) => {
+  throw new httpError(404, "경로를 찾을 수 없습니다.");
 });
 
+/**
+ * 에러 처리 라우터
+ */
 app.use((err, req, res, next) => {
-  // res.locals는 request의 라이프 타임에만 유지됨
-  console.log(err);
-  res.status(err.status).json({});
-  res.locals.message = err.message;
-  res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
-  res.status(err.status || 500);
-  res.render("error");
+  // res.status(err.status).json(err);
+  // 왜 안받아지지?
+  res.json(err);
 });
 
 app.listen(app.get("port"), () => {
