@@ -7,7 +7,7 @@ RT_EXPIRES_IN = "14d";
 ALGORITHM = "HS256";
 
 module.exports = {
-  sign: (userEmail) => {
+  issueAcsTkn: (userEmail) => {
     // access token 발급
     const payload = { email: userEmail };
     // secret으로 sign하여 발급하고 return
@@ -16,7 +16,7 @@ module.exports = {
       expiresIn: AT_EXPIRES_IN, // 유효기간
     });
   },
-  verify: (token) => {
+  verifyAcsTkn: (token) => {
     // access token 검증
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
@@ -32,7 +32,7 @@ module.exports = {
       };
     }
   },
-  refresh: () => {
+  issueRfrTkn: () => {
     // refresh token 발급
     return jwt.sign({}, JWT_SECRET, {
       // refresh token은 payload 없이 발급 -> 왜일까
@@ -40,7 +40,7 @@ module.exports = {
       expiresIn: RT_EXPIRES_IN,
     });
   },
-  refreshVerify: async (token, userEmail) => {
+  verifyRfrTkn: async (token, userEmail) => {
     // refresh token 검증
     try {
       const { refreshToken } = await userOrm.readUserRefreshToken(userEmail); // refresh token 가져오기

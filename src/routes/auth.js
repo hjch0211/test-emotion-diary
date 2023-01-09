@@ -16,6 +16,7 @@ router
     const isUnique = !(await userOrm.readUserData(email));
     if (!isUnique) next(ERROR_DUPLICATE_EMAIL);
 
+    await userOrm.createUser({ email, name });
     // db에 사용자 정보 추가하고
     // response하는 작업하기
   })

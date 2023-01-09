@@ -13,7 +13,7 @@ module.exports = userORM = {
   createUser: async (payload) => {
     const { email, name = "" } = payload;
     await prisma.user.create({
-      data: { email, name, role: false },
+      data: { email, name },
     });
   },
 
