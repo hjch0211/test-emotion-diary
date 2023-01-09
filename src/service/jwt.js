@@ -23,7 +23,6 @@ module.exports = {
       return {
         ok: true,
         email: decoded.email,
-        role: decoded.role,
       };
     } catch (err) {
       return {
