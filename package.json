@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=production PORT=80 node server",
+    "start": "cross-env NODE_ENV=production PORT=80 pm2 start ./src/index.js -i 0",
     "dev": "nodemon ./src/index"
   },
   "repository": {
@@ -40,6 +40,8 @@
     "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.0",
     "nunjucks": "^3.2.3",
-    "sanitize-html": "^2.8.1"
+    "pm2": "^5.2.2",
+    "sanitize-html": "^2.8.1",
+    "winston": "^3.8.2"
   }
 }
