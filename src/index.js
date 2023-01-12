@@ -8,6 +8,7 @@ const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const HttpError = require("./util/httpError");
 const exceptError = require("./routes/middlewares/exceptError");
+const logger = require("./logger");
 
 dotenv.config();
 const indexRouter = require("./routes");
@@ -40,7 +41,10 @@ app.use("/", indexRouter);
  * 경로가 없는 라우터 접근 시
  */
 app.use((req, res) => {
-  throw new HttpError(404, "경로를 찾을 수 없습니다.");
+  // winston logger 추가 -> 사용법도 간단하고 너무 좋은데?
+  logger.info("hello");
+  logger.error("hohohohohohohohohohohohohohohohohohohohohohohoho");
+  return next(new HttpError(404, "경로를 찾을 수 없습니다."));
 });
 
 /**
