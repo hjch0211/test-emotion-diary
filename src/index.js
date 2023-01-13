@@ -9,8 +9,15 @@ const bodyParser = require("body-parser");
 const HttpError = require("./util/httpError");
 const exceptError = require("./routes/middlewares/exceptError");
 const logger = require("./logger");
+const redis = require("redis");
+const RedisStore = require("connect-redis");
 
-dotenv.config();
+dotenv.config(); // 애가 먼저 실행되어야 .env 사용 가능
+const redisClient = redis.createClient({
+  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+  password: process.env.REDIS_PASSWORD,
+});
+
 const indexRouter = require("./routes");
 
 const app = express();
@@ -32,6 +39,8 @@ app.use(
       httpOnly: true,
       secure: false,
     },
+    // session에 store 속성을 넣어주어 레디스에 저장하게끔 함
+    store: new RedisStore({ client: redisClient }),
   })
 );
 
@@ -40,7 +49,7 @@ app.use("/", indexRouter);
 /**
  * 경로가 없는 라우터 접근 시
  */
-app.use((req, res) => {
+app.use((req, res, next) => {
   // winston logger 추가 -> 사용법도 간단하고 너무 좋은데?
   logger.info("hello");
   logger.error("hohohohohohohohohohohohohohohohohohohohohohohoho");

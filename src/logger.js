@@ -9,8 +9,8 @@ const logger = createLogger({
   format: format.json(),
   // 로그 저장 방식. File은 파일로 저장, Console은 콘솔로 저장
   transports: [
-    new transports.File({ filename: "combined.log" }),
-    new transports.File({ filename: "error.log", level: "error" }),
+    new transports.File({ filename: "./src/logs/combined.log" }),
+    new transports.File({ filename: "./src/logs/error.log", level: "error" }),
   ],
 });
 
